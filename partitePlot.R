@@ -9,8 +9,8 @@ ppi=read.table(ppiFile,header=T,sep="\t")
 interP=as.character(ppi$interP)
 bait=as.character(ppi$bait)
 
-uniqInterP <- unique( ppi[ , 1] )[,c(1,3)]
-uniqBait <- unique( ppi[ , 2] )[,c(2,4)]
+uniqInterP <- ppi[!duplicated(ppi[ , 1]),c(1,3)]
+uniqBait <- ppi[!duplicated(ppi[, 2] ),c(2,4)]
 p=rbind(uniqInterP,uniqBait)[,2]
 logP=log10(p)
 minX=floor(min(logP))
