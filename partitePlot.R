@@ -32,7 +32,7 @@ for( i in 1:dim(ppi)[1]){
 dymean = aggregate(ppi$yp, list(ppi$interP), mean)
 dymax = aggregate(ppi$yp, list(ppi$interP), max)
 y1=dymean
-y1=apply(1:dim(dymax[1]), function(i) { if ( dymean[i,2] == dymax[i,2]) y1[i,2]= runif(1,dymean[i,2]-spanLenBait/2, dymean+spanLenBait/2) })
+xy1=sapply(1:dim(dymax[1]), function(i) { if ( dymean[i,2] == dymax[i,2]) y1[i,2]=runif(1,dymean[i,2]-spanLenBait/2, dymean[i,2]+spanLenBait/2) } )
 
 
 #maxY=freq$counts
