@@ -10,6 +10,7 @@ interP=as.character(ppi$interP)
 bait=as.character(ppi$bait)
 
 uniqInterP <- ppi[!duplicated(ppi[ , 1]),c(1,3)]
+colnames(uniqInterP)=c("bait","pb")
 uniqBait <- ppi[!duplicated(ppi[, 2] ),c(2,4)]
 p=rbind(uniqInterP,uniqBait)[,2]
 logP=log10(p)
