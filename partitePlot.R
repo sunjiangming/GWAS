@@ -13,16 +13,16 @@ uniqInterP <- ppi[!duplicated(ppi[ , 1]),c(1,3)]
 colnames(uniqInterP)=c("bait","pb")
 uniqBait <- ppi[!duplicated(ppi[, 2] ),c(2,4)]
 p=rbind(uniqInterP,uniqBait)[,2]
-logP=log10(p)
+logP=-log10(p)
 minX=floor(min(logP))
 maxX=ceiling(max(logP))
 
 br = seq(minX,maxX,1)
 freq=hist(logP, breaks=br, include.lowest=TRUE, plot=FALSE)
-spanLenBait = max(freq$counts)/(length(uniqBait[,1]) + 1), 1)
+spanLenBait = max(max(freq$counts)/(length(uniqBait[,1]) + 1), 1)
 uniqBait$y=NULL
-for( i in length(uniqBait[,1]:1){
-  uniqBait$y[i]=(length(uniqBait[,1]-i+1)*spanLenBait
+for( i in length(uniqBait[,1]):1){
+  uniqBait$y[i]=(length(uniqBait[,1])-i+1)*spanLenBait
 }
 
 ppi$yp=NULL
