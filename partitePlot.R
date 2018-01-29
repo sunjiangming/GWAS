@@ -26,13 +26,13 @@ for( i in length(uniqBait[,1]):1){
 }
 
 ppi$yp=NULL
-for( i in dim(ppi)[1]){
-  ppi$yp[i] = uniqBait$y[ ppi$bait==uniqBait[,1] ]
+for( i in 1:dim(ppi)[1]){
+  ppi$yp[i] = uniqBait$y[ ppi$bait[i]==uniqBait[,1] ]
 }
 dymean = aggregate(ppi$yp, list(ppi$interP), mean)
 dymax = aggregate(ppi$yp, list(ppi$interP), max)
 y1=dymean
-apply(1:dim(dymax[1]), function(x) { if ( dymean[i,2]} == dymax[i,2]) y1[i,2]= runif(1,dymean[i,2]-spanLenBait/2, dymean+spanLenBait/2) })
+y1=apply(1:dim(dymax[1]), function(i) { if ( dymean[i,2] == dymax[i,2]) y1[i,2]= runif(1,dymean[i,2]-spanLenBait/2, dymean+spanLenBait/2) })
 
 
 #maxY=freq$counts
