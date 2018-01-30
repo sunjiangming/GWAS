@@ -34,13 +34,11 @@ dymax = aggregate(ppi$yp, list(ppi$interP), max)
 --------------------------------------------------
 y1=dymean[,2]
 t=1:dim(dymax)[1]
-y1=apply(t, 1,function(i) { if ( dymean[i,2] == dymax[i,2]) y1[i]=runif(1,dymean[i,2]-spanLenBait/2, dymean[i,2]+spanLenBait/2)} )
-
-
+y1=sapply(t, function(i) { ifelse( any(dymean[i,2] == dymax[i,2]), runif(1,dymean[i,2]-spanLenBait/2, dymean[i,2]+spanLenBait/2),y1[i]) } )
 
 #maxY=freq$counts
-x1 = log10(uniqInterP[,2])
-x2 = log10(uniqBait[,2])
+x1 = -log10(uniqInterP[,2])
+x2 = -log10(uniqBait[,2])
 y2 = uniqBait$y
 
 library(ggplot2)
