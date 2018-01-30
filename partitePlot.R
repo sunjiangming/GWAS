@@ -17,6 +17,7 @@ logP=-log10(p)
 minX=floor(min(logP))
 maxX=ceiling(max(logP))
 
+### make stat on x span, e.g. number of proteins with -logP range at 5-6
 br = seq(minX,maxX,1)
 freq=hist(logP, breaks=br, include.lowest=TRUE, plot=FALSE)
 spanLenBait = max(max(freq$counts)/(length(uniqBait[,1]) + 1), 1)
@@ -39,22 +40,20 @@ uniqInterP$y = y1
 
 ppi$x1 = -log10(ppi$pi)
 ppi$x2 = -log10(ppi$pb)
-#ppi$y2 = -log10(ppi$yp)
 
 ppi$y1=NULL
 for( i in 1:dim(ppi)[1]){
   ppi$y1[i] = uniqInterP$y[ ppi$interP[i]==uniqInterP[,1] ]
 }
 
-#maxY=freq$counts
-#x1 = -log10(uniqInterP[,2])
-#x2 = -log10(uniqBait[,2])
-#y2 = uniqBait$y
-
 library(ggplot2)
 # Simple version.
-p1 = ggplot(ppi,aes(x=x1, xend=x2, y=y1, yend=y2)) +
-     geom_segment(size=1.2)
+p1 = ggplot(ppi,aes(x=x1, xend=x2, y=y1, yend=y2,colour=y2)) +
+     geom_segment(size=1.2) +
+     geom_text(data=ppi, aes(label=ppi$interP, x=x1, y=y1 - 0.075)) +
+     geom_text(data=ppi, aes(label=ppi$bait, x=x2, y=y2 + 0.075)) +
+     labs(x="-log10P",y="") +
+     theme(legend.position="none")
 
 ggsave(plot=p1, filename="plot_1.png", height=3.5, width=6)
 
