@@ -36,16 +36,17 @@ dymax = aggregate(ppi$y2, list(ppi$interP), max)
 ###--------------------------------------------------
 y1=dymean[,2]
 t=1:dim(dymax)[1]
-y1=sapply(t, function(i) { ifelse( any(dymean[i,2] == dymax[i,2]), runif(1,dymean[i,2]-spanLenBait/2, dymean[i,2]+spanLenBait/2),dymean[i,2]) } )
-dymean$y = y1
-dymean$x = -log10(aggregate(ppi$pi, list(ppi$interP), mean)[,2])
+y1=sapply(t, function(i) { ifelse( any(dymean[i,2] == dymax[i,2]), runif(1,dymean[i,2]-spanLenBait, dymean[i,2]+spanLenBait),dymean[i,2]+runif(1,-0.5,0.5)) } )
+
+dymax$x = -log10(aggregate(ppi$pi, list(ppi$interP), mean)[,2])
+dymax$y=y1
 
 ppi$x1 = -log10(ppi$pi)
 ppi$x2 = -log10(ppi$pb)
 
 ppi$y1=NULL
 for( i in 1:dim(ppi)[1]){
-  ppi$y1[i] = dymean$y[ ppi$interP[i]==dymean[,1] ]
+  ppi$y1[i] = y1[ ppi$interP[i]==dymean[,1] ]
 }
 
 library(ggplot2)
@@ -54,11 +55,18 @@ library(ggrepel)
 # Simple version.
 p1 = ggplot(ppi,aes(x=x1, xend=x2, y=y1, yend=y2,colour=y2)) +
      geom_segment(size=0.5) +
-     geom_point(color=ppi$y2) + 
-     geom_text(data=uniqBait,aes(label=uniqBait$bait, x=uniqBait$x, y=uniqBait$y)) +
+     geom_point() + 
+     geom_text(data=ppi,aes(label=interP, x=x1, y=y1)) + 
+     geom_text(data=ppi,aes(label=bait, x=x2, y=y2)) + 
+     scale_x_continuous(breaks=c(5:25)) +
      labs(x="-log10P",y="") +
      theme(legend.position="none")
-p1 + geom_text(data=dymean,aes(label=dymean[,1], x=dymean$x, y=dymean$y))
+
+
+     geom_text(data=uniqBait,aes(label=uniqBait$bait, x=uniqBait$x, y=uniqBait$y,colour=uniqBait$bait)) +
+
+p1 + geom_text_repel(data=uniqBait,aes(label=bait, x=x, y=y)) +
+p1 + geom_text(data=dymax,aes(label=dymax[,1], x=dymax$x, y=dymax$y))
 
 ggsave(plot=p1, filename="plot_1.png", height=3.5, width=6)
 
