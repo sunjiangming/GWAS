@@ -24,7 +24,7 @@ spanLenBait = max(max(freq$counts)/(length(uniqBait[,1]) + 1), 1)
 uniqBait$x=-log10(uniqBait$pb)
 uniqBait$y=NULL
 for( i in length(uniqBait[,1]):1){
-  uniqBait$y[i]=(length(uniqBait[,1])-i+1)*spanLenBait
+  uniqBait$y[i]=2*(length(uniqBait[,1])-i+1)*spanLenBait
 }
 
 ppi$y2=NULL
@@ -36,7 +36,7 @@ dymax = aggregate(ppi$y2, list(ppi$interP), max)
 ###--------------------------------------------------
 y1=dymean[,2]
 t=1:dim(dymax)[1]
-y1=sapply(t, function(i) { ifelse( any(dymean[i,2] == dymax[i,2]), runif(1,dymean[i,2]-spanLenBait, dymean[i,2]+spanLenBait),dymean[i,2]+runif(1,-0.5,0.5)) } )
+y1=sapply(t, function(i) { ifelse( any(dymean[i,2] == dymax[i,2]), runif(1,dymean[i,2]-1*spanLenBait, dymean[i,2]+3*spanLenBait),dymean[i,2]+runif(1,-1,4)) } )
 
 dymax$x = -log10(aggregate(ppi$pi, list(ppi$interP), mean)[,2])
 dymax$y=y1
@@ -53,21 +53,21 @@ library(ggplot2)
 library(ggrepel)
 
 # Simple version.
-p1 = ggplot(ppi,aes(x=x1, xend=x2, y=y1, yend=y2,colour=y2)) +
-     geom_segment(size=0.5) +
-     geom_point() + 
-     geom_text(data=ppi,aes(label=interP, x=x1, y=y1)) + 
-     geom_text(data=ppi,aes(label=bait, x=x2, y=y2)) + 
-     scale_x_continuous(breaks=c(5:25)) +
+p1 = ggplot(ppi,aes(x=x1, xend=x2, y=y1, yend=y2,colour=bait)) +
+     geom_segment(size=0.2) +
+     geom_point(aes(colour=ppi$bait)) + 
+     geom_text(data=ppi,aes(label=interP, x=x1, y=y1-0.25),size=3) + 
+     geom_text(data=ppi,aes(label=bait, x=x2, y=y2-0.25)) + 
+     scale_x_continuous(breaks=c(5:25), minor_breaks=NULL) +
      labs(x="-log10P",y="") +
      theme(legend.position="none")
 
 
-     geom_text(data=uniqBait,aes(label=uniqBait$bait, x=uniqBait$x, y=uniqBait$y,colour=uniqBait$bait)) +
+geom_text(data=uniqBait,aes(label=uniqBait$bait, x=uniqBait$x, y=uniqBait$y,colour=uniqBait$bait)) +
 
 p1 + geom_text_repel(data=uniqBait,aes(label=bait, x=x, y=y)) +
 p1 + geom_text(data=dymax,aes(label=dymax[,1], x=dymax$x, y=dymax$y))
 
 ggsave(plot=p1, filename="plot_1.png", height=3.5, width=6)
-
+ggsave(plot=p1, filename="plot_2.png")
 
