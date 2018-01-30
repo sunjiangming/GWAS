@@ -52,8 +52,8 @@ library(ggrepel)
 p1 = ggplot(ppi,aes(x=x1, xend=x2, y=y1, yend=y2,colour=y2)) +
      geom_segment(size=1.2) +
      geom_point(colour=ppi$y2) +
-     geom_text(data=ppi, aes(label=ppi$interP, x=x1, y=y1 - 0.075)) +
-     geom_text(data=ppi, aes(label=ppi$bait, x=x2, y=y2 + 0.075)) +
+     geom_text(data=ppi, aes(label=dymean[,1], x=dymean$x, y=dymean$y - 0.075)) +
+     geom_text(data=ppi, aes(label=uniqBait$bait, x=uniqBait$y, y=uniqBait$y + 0.075)) +
      labs(x="-log10P",y="") +
      theme(text = element_text(size=12)) +
      theme(legend.position="none")
