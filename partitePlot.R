@@ -21,6 +21,7 @@ maxX=ceiling(max(logP))
 br = seq(minX,maxX,1)
 freq=hist(logP, breaks=br, include.lowest=TRUE, plot=FALSE)
 spanLenBait = max(max(freq$counts)/(length(uniqBait[,1]) + 1), 1)
+uniqBait$x=-log10(uniqBait$pb)
 uniqBait$y=NULL
 for( i in length(uniqBait[,1]):1){
   uniqBait$y[i]=(length(uniqBait[,1])-i+1)*spanLenBait
@@ -37,6 +38,7 @@ y1=dymean[,2]
 t=1:dim(dymax)[1]
 y1=sapply(t, function(i) { ifelse( any(dymean[i,2] == dymax[i,2]), runif(1,dymean[i,2]-spanLenBait/2, dymean[i,2]+spanLenBait/2),dymean[i,2]) } )
 dymean$y = y1
+dymean$x = -log10(aggregate(ppi$pi, list(ppi$interP), mean)[,2])
 
 ppi$x1 = -log10(ppi$pi)
 ppi$x2 = -log10(ppi$pb)
@@ -48,16 +50,15 @@ for( i in 1:dim(ppi)[1]){
 
 library(ggplot2)
 library(ggrepel)
+
 # Simple version.
 p1 = ggplot(ppi,aes(x=x1, xend=x2, y=y1, yend=y2,colour=y2)) +
-     geom_segment(size=1.2) +
-     geom_point(colour=ppi$y2) +
-     geom_text(data=ppi, aes(label=dymean[,1], x=dymean$x, y=dymean$y - 0.075)) +
-     geom_text(data=ppi, aes(label=uniqBait$bait, x=uniqBait$y, y=uniqBait$y + 0.075)) +
+     geom_segment(size=0.5) +
+     geom_point(color=ppi$y2) + 
+     geom_text(data=uniqBait,aes(label=uniqBait$bait, x=uniqBait$x, y=uniqBait$y)) +
      labs(x="-log10P",y="") +
-     theme(text = element_text(size=12)) +
      theme(legend.position="none")
-
+p1 + geom_text(data=dymean,aes(label=dymean[,1], x=dymean$x, y=dymean$y))
 
 ggsave(plot=p1, filename="plot_1.png", height=3.5, width=6)
 
