@@ -25,25 +25,35 @@ for( i in length(uniqBait[,1]):1){
   uniqBait$y[i]=(length(uniqBait[,1])-i+1)*spanLenBait
 }
 
-ppi$yp=NULL
+ppi$y2=NULL
 for( i in 1:dim(ppi)[1]){
-  ppi$yp[i] = uniqBait$y[ ppi$bait[i]==uniqBait[,1] ]
+  ppi$y2[i] = uniqBait$y[ ppi$bait[i]==uniqBait[,1] ]
 }
-dymean = aggregate(ppi$yp, list(ppi$interP), mean)
-dymax = aggregate(ppi$yp, list(ppi$interP), max)
+dymean = aggregate(ppi$y2, list(ppi$interP), mean)
+dymax = aggregate(ppi$y2, list(ppi$interP), max)
 --------------------------------------------------
 y1=dymean[,2]
 t=1:dim(dymax)[1]
 y1=sapply(t, function(i) { ifelse( any(dymean[i,2] == dymax[i,2]), runif(1,dymean[i,2]-spanLenBait/2, dymean[i,2]+spanLenBait/2),y1[i]) } )
+uniqInterP$y = y1
+
+ppi$x1 = -log10(ppi$pi)
+ppi$x2 = -log10(ppi$pb)
+#ppi$y2 = -log10(ppi$yp)
+
+ppi$y1=NULL
+for( i in 1:dim(ppi)[1]){
+  ppi$y1[i] = uniqInterP$y[ ppi$interP[i]==uniqInterP[,1] ]
+}
 
 #maxY=freq$counts
-x1 = -log10(uniqInterP[,2])
-x2 = -log10(uniqBait[,2])
-y2 = uniqBait$y
+#x1 = -log10(uniqInterP[,2])
+#x2 = -log10(uniqBait[,2])
+#y2 = uniqBait$y
 
 library(ggplot2)
 # Simple version.
-p1 = ggplot(dat, aes(x=x1, xend=x2, y=y1, yend=y2)) +
+p1 = ggplot(ppi,aes(x=x1, xend=x2, y=y1, yend=y2)) +
      geom_segment(size=1.2)
 
 ggsave(plot=p1, filename="plot_1.png", height=3.5, width=6)
