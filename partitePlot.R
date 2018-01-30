@@ -47,14 +47,16 @@ for( i in 1:dim(ppi)[1]){
 }
 
 library(ggplot2)
+library(ggrepel)
 # Simple version.
 p1 = ggplot(ppi,aes(x=x1, xend=x2, y=y1, yend=y2,colour=y2)) +
      geom_segment(size=1.2) +
      geom_point(colour=ppi$y2) +
-     geom_text(data=ppi, aes(label=ppi$interP, x=x1, y=y1 - 0.075)) +
-     geom_text(data=ppi, aes(label=ppi$bait, x=x2, y=y2 + 0.075)) +
+     geom_text_repel(data=ppi, aes(label=ppi$interP, x=x1, y=y1 - 0.075),label.size = 0.25) +
+     geom_text(data=ppi, aes(label=ppi$bait, x=x2, y=y2 + 0.075),label.size = 0.5) +
      labs(x="-log10P",y="") +
      theme(legend.position="none")
+
 
 ggsave(plot=p1, filename="plot_1.png", height=3.5, width=6)
 
