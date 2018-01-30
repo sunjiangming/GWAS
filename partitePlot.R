@@ -9,7 +9,7 @@ ppi=read.table(ppiFile,header=T,sep="\t")
 interP=as.character(ppi$interP)
 bait=as.character(ppi$bait)
 
-uniqInterP <- ppi[!duplicated(ppi[ , 1]),c(1,3)]
+uniqInterP <- ppi[!duplicated(ppi[, 1]),c(1,3)]
 colnames(uniqInterP)=c("bait","pb")
 uniqBait <- ppi[!duplicated(ppi[, 2] ),c(2,4)]
 p=rbind(uniqInterP,uniqBait)[,2]
@@ -32,24 +32,25 @@ for( i in 1:dim(ppi)[1]){
 }
 dymean = aggregate(ppi$y2, list(ppi$interP), mean)
 dymax = aggregate(ppi$y2, list(ppi$interP), max)
---------------------------------------------------
+###--------------------------------------------------
 y1=dymean[,2]
 t=1:dim(dymax)[1]
-y1=sapply(t, function(i) { ifelse( any(dymean[i,2] == dymax[i,2]), runif(1,dymean[i,2]-spanLenBait/2, dymean[i,2]+spanLenBait/2),y1[i]) } )
-uniqInterP$y = y1
+y1=sapply(t, function(i) { ifelse( any(dymean[i,2] == dymax[i,2]), runif(1,dymean[i,2]-spanLenBait/2, dymean[i,2]+spanLenBait/2),dymean[i,2]) } )
+dymean$y = y1
 
 ppi$x1 = -log10(ppi$pi)
 ppi$x2 = -log10(ppi$pb)
 
 ppi$y1=NULL
 for( i in 1:dim(ppi)[1]){
-  ppi$y1[i] = uniqInterP$y[ ppi$interP[i]==uniqInterP[,1] ]
+  ppi$y1[i] = dymean$y[ ppi$interP[i]==dymean[,1] ]
 }
 
 library(ggplot2)
 # Simple version.
 p1 = ggplot(ppi,aes(x=x1, xend=x2, y=y1, yend=y2,colour=y2)) +
      geom_segment(size=1.2) +
+     geom_point(colour=ppi$y2) +
      geom_text(data=ppi, aes(label=ppi$interP, x=x1, y=y1 - 0.075)) +
      geom_text(data=ppi, aes(label=ppi$bait, x=x2, y=y2 + 0.075)) +
      labs(x="-log10P",y="") +
